@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+
+# Build outputs
+/dist/
+/build/
+/.next/
+/.nuxt/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env*
+.env.local
+.env.development
+.env.production
+
+# Docker
+**/docker-compose.override.yml
+**/docker-compose.local.yml
+**/Dockerfile*
+**/.docker/
+
+# Database
+**/database/backups/
+**/database/migrations/
+**/database/seeds/
+
+# Uploads
+**/uploads/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+/coverage/
+**/testing/cypress/videos/
+**/testing/cypress/screenshots/
+
+# Misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend static assets
+**/frontend/public/documents/
+**/frontend/public/images/
+
+# Shared
+**/shared/constants/*.local.js
