@@ -1,7 +1,7 @@
 import express from "express";
 import {
   getEducation,
-  getSingleEducation,
+  getEducationById,
   createEducation,
   updateEducation,
   deleteEducation,
@@ -17,7 +17,7 @@ router
 
 router
   .route("/:id")
-  .get(getSingleEducation)
+  .get(getEducationById)
   .put(protect, authorize("admin"), updateEducation)
   .delete(protect, authorize("admin"), deleteEducation);
 
