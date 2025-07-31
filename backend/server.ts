@@ -6,12 +6,13 @@ import express, {
 } from "express";
 
 import dotenv from "dotenv";
+import connectDB from "./src/config/db";
 
 // Import routes
-import authRoutes from "./src/routes/auth.routes";
-import userRoutes from "./src/routes/user.routes";
 import aboutRoutes from "./src/routes/about.routes";
-import connectDB from "./src/config/db";
+import authRoutes from "./src/routes/auth.routes";
+import educationRoutes from "./src/routes/education.routes";
+import userRoutes from "./src/routes/user.routes";
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/about", aboutRoutes);
+app.use("/api/education", educationRoutes);
 
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {
