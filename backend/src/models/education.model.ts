@@ -1,25 +1,28 @@
-import mongoose, { type Schema } from "mongoose"
-import type { EducationDocument } from "../types"
+import mongoose, { Schema, type Document } from "mongoose";
+import { EducationDocument } from "../types";
 
-const educationSchema: Schema<EducationDocument> = new mongoose.Schema(
+const EducationSchema: Schema = new Schema(
   {
     degree: {
       type: String,
-      required: [true, "Please provide a degree"],
+      required: [true, "Please add a degree"],
       trim: true,
+      maxlength: [100, "Degree cannot be more than 100 characters"],
     },
     institution: {
       type: String,
-      required: [true, "Please provide an institution"],
+      required: [true, "Please add an institution"],
       trim: true,
+      maxlength: [100, "Institution cannot be more than 100 characters"],
     },
     year: {
       type: String,
-      required: [true, "Please provide a year"],
+      required: [true, "Please add a year"],
+      trim: true,
     },
     details: {
       type: String,
-      trim: true,
+      maxlength: [500, "Details cannot be more than 500 characters"],
     },
     order: {
       type: Number,
@@ -28,7 +31,10 @@ const educationSchema: Schema<EducationDocument> = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-)
+  }
+);
 
-export default mongoose.model<EducationDocument>("Education", educationSchema)
+// Index for ordering
+EducationSchema.index({ order: 1 });
+
+export default mongoose.model<EducationDocument>("Education", EducationSchema);
