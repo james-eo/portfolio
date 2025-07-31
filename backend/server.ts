@@ -13,6 +13,7 @@ import aboutRoutes from "./src/routes/about.routes";
 import authRoutes from "./src/routes/auth.routes";
 import educationRoutes from "./src/routes/education.routes";
 import userRoutes from "./src/routes/user.routes";
+import skillsRoutes from "./src/routes/skills.routes";
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/education", educationRoutes);
+app.use("/api/skills", skillsRoutes);
 
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {
