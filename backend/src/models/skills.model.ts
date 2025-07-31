@@ -1,26 +1,31 @@
-import mongoose, { type Schema } from "mongoose"
-import type { ISkill, SkillCategoryDocument } from "../types"
+import mongoose, { Schema, type Document } from "mongoose";
+import { SkillCategoryDocument } from "../types";
 
-const skillSchema: Schema<ISkill> = new mongoose.Schema({
+const SkillSchema: Schema = new Schema({
   name: {
     type: String,
-    required: [true, "Please provide a skill name"],
+    required: [true, "Please add a skill name"],
     trim: true,
+    maxlength: [50, "Skill name cannot be more than 50 characters"],
   },
-})
+});
 
-const skillCategorySchema: Schema<SkillCategoryDocument> = new mongoose.Schema(
+const SkillCategorySchema: Schema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Please provide a category name"],
+      required: [true, "Please add a category name"],
       trim: true,
+      maxlength: [50, "Category name cannot be more than 50 characters"],
     },
-    skills: [skillSchema],
+    skills: [SkillSchema],
   },
   {
     timestamps: true,
-  },
-)
+  }
+);
 
-export default mongoose.model<SkillCategoryDocument>("SkillCategory", skillCategorySchema)
+export default mongoose.model<SkillCategoryDocument>(
+  "SkillCategory",
+  SkillCategorySchema
+);
