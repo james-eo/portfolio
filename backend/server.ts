@@ -11,11 +11,11 @@ import connectDB from "./src/config/db";
 // Import routes
 import aboutRoutes from "./src/routes/about.routes";
 import authRoutes from "./src/routes/auth.routes";
-import contactRouets from "./src/routes/contact.routes";
+import contactRoutes from "./src/routes/contact.routes";
 import educationRoutes from "./src/routes/education.routes";
 import userRoutes from "./src/routes/user.routes";
 import skillsRoutes from "./src/routes/skills.routes";
-import contactRoutes from "./src/routes/contact.routes";
+import experirienceRoutes from "./src/routes/experience.routes";
 
 // Load environment variables
 dotenv.config();
@@ -37,6 +37,7 @@ app.use("/api/about", aboutRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/education", educationRoutes);
 app.use("/api/skills", skillsRoutes);
+app.use("/api/experience", experirienceRoutes);
 
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {
