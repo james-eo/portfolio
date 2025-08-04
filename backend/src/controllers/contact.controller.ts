@@ -6,10 +6,19 @@ import sendEmail from "../utils/sendEmail";
 
 // @desc    Get all contact messages
 // @route   GET /api/contact
-// @access  Private (Admin)
-export const getContacts = asyncHandler(
+// @access  Private/Admin
+export const getContactMessages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const contacts = await Contact.find().sort("-createdAt");
+    const { read } = req.query;
+
+    let query = {};
+    if (read === "true") {
+      query = { read: true };
+    } else if (read === "false") {
+      query = { read: false };
+    }
+
+    const contacts = await Contact.find(query).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -21,8 +30,8 @@ export const getContacts = asyncHandler(
 
 // @desc    Get single contact message
 // @route   GET /api/contact/:id
-// @access  Private (Admin)
-export const getContact = asyncHandler(
+// @access  Private/Admin
+export const getContactMessageById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const contact = await Contact.findById(req.params.id);
 
@@ -35,10 +44,98 @@ export const getContact = asyncHandler(
       );
     }
 
-    // Mark as read if not already
-    if (!contact.read) {
-      contact.read = true;
-      await contact.save();
+    res.status(200).json({
+      success: true,
+      data: contact,
+    });
+  }
+);
+
+// @desc    Create contact message
+// @route   POST /api/contact
+// @access  Public
+export const createContactMessage = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { name, email, subject, message } = req.body;
+    // Validate required fields
+    if (!name) {
+      return next(new ErrorResponse("Name is required", 400));
+    }
+
+    if (!email) {
+      return next(new ErrorResponse("Email is required", 400));
+    }
+
+    if (!subject) {
+      return next(new ErrorResponse("Subject is required", 400));
+    }
+
+    if (!message) {
+      return next(new ErrorResponse("Message is required", 400));
+    }
+
+    // Validate email format
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      return next(
+        new ErrorResponse("Please provide a valid email address", 400)
+      );
+    }
+
+    const contact = await Contact.create(req.body);
+
+    // Send notification email to admin (optional)
+    try {
+      if (process.env.ADMIN_EMAIL) {
+        await sendEmail({
+          email: process.env.ADMIN_EMAIL,
+          subject: `New Contact Form Submission: ${subject}`,
+          message: `
+          New contact form submission received:
+          
+          Name: ${name}
+          Email: ${email}
+          Subject: ${subject}
+          Message: ${message}
+          
+          Submitted at: ${new Date().toLocaleString()}
+        `,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to send notification email:", error);
+      // Don't fail the request if email sending fails
+    }
+
+    res.status(201).json({
+      success: true,
+      data: contact,
+      message: "Message submitted successfully",
+    });
+  }
+);
+
+// @desc    Mark contact message as read
+// @route   PUT /api/contact/:id/read
+// @access  Private/Admin
+export const markAsRead = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const contact = await Contact.findByIdAndUpdate(
+      req.params.id,
+      { read: true },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!contact) {
+      return next(
+        new ErrorResponse(
+          `Contact message not found with id of ${req.params.id}`,
+          404
+        )
+      );
     }
 
     res.status(200).json({
@@ -48,53 +145,10 @@ export const getContact = asyncHandler(
   }
 );
 
-// @desc    Create new contact message
-// @route   POST /api/contact
-// @access  Public
-export const createContact = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, subject, message } = req.body;
-
-    // Create contact message
-    const contact = await Contact.create({
-      name,
-      email,
-      subject,
-      message,
-    });
-
-    // Send notification email to admin
-    try {
-      await sendEmail({
-        email: process.env.ADMIN_EMAIL as string,
-        subject: `New Contact Form Submission: ${subject}`,
-        message: `
-        You have received a new message from your portfolio contact form.
-        
-        Name: ${name}
-        Email: ${email}
-        Subject: ${subject}
-        
-        Message:
-        ${message}
-      `,
-      });
-    } catch (err) {
-      console.log("Email notification failed:", err);
-      // Continue even if email fails
-    }
-
-    res.status(201).json({
-      success: true,
-      data: contact,
-    });
-  }
-);
-
 // @desc    Delete contact message
 // @route   DELETE /api/contact/:id
-// @access  Private (Admin)
-export const deleteContact = asyncHandler(
+// @access  Private/Admin
+export const deleteContactMessage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const contact = await Contact.findById(req.params.id);
 
@@ -112,32 +166,7 @@ export const deleteContact = asyncHandler(
     res.status(200).json({
       success: true,
       data: {},
-    });
-  }
-);
-
-// @desc    Mark contact message as read/unread
-// @route   PUT /api/contact/:id/read
-// @access  Private (Admin)
-export const toggleReadStatus = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const contact = await Contact.findById(req.params.id);
-
-    if (!contact) {
-      return next(
-        new ErrorResponse(
-          `Contact message not found with id of ${req.params.id}`,
-          404
-        )
-      );
-    }
-
-    contact.read = !contact.read;
-    await contact.save();
-
-    res.status(200).json({
-      success: true,
-      data: contact,
+      message: "Message deleted successfully",
     });
   }
 );
