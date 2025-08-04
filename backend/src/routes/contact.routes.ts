@@ -1,19 +1,25 @@
-import express from "express"
+import express from "express";
 import {
-  getContacts,
-  getContact,
-  createContact,
-  deleteContact,
-  toggleReadStatus,
-} from "../controllers/contact.controller"
-import { protect, authorize } from "../middleware/auth.middleware"
+  getContactMessages,
+  getContactMessageById,
+  createContactMessage,
+  markAsRead,
+  deleteContactMessage,
+} from "../controllers/contact.controller";
+import { protect, authorize } from "../middleware/auth.middleware";
 
-const router = express.Router()
+const router = express.Router();
 
-router.route("/").get(protect, authorize("admin"), getContacts).post(createContact)
+router
+  .route("/")
+  .get(protect, authorize("admin"), getContactMessages)
+  .post(createContactMessage);
 
-router.route("/:id").get(protect, authorize("admin"), getContact).delete(protect, authorize("admin"), deleteContact)
+router
+  .route("/:id")
+  .get(protect, authorize("admin"), getContactMessageById)
+  .delete(protect, authorize("admin"), deleteContactMessage);
 
-router.route("/:id/read").put(protect, authorize("admin"), toggleReadStatus)
+router.route("/:id/read").put(protect, authorize("admin"), markAsRead);
 
-export default router
+export default router;
