@@ -11,9 +11,11 @@ import connectDB from "./src/config/db";
 // Import routes
 import aboutRoutes from "./src/routes/about.routes";
 import authRoutes from "./src/routes/auth.routes";
+import contactRouets from "./src/routes/contact.routes";
 import educationRoutes from "./src/routes/education.routes";
 import userRoutes from "./src/routes/user.routes";
 import skillsRoutes from "./src/routes/skills.routes";
+import contactRoutes from "./src/routes/contact.routes";
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +34,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/about", aboutRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/education", educationRoutes);
 app.use("/api/skills", skillsRoutes);
 
