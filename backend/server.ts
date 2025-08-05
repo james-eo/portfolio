@@ -15,7 +15,8 @@ import contactRoutes from "./src/routes/contact.routes";
 import educationRoutes from "./src/routes/education.routes";
 import userRoutes from "./src/routes/user.routes";
 import skillsRoutes from "./src/routes/skills.routes";
-import experirienceRoutes from "./src/routes/experience.routes";
+import experienceRoutes from "./src/routes/experience.routes";
+import projectRoutes from "./src/routes/projects.routes";
 
 // Load environment variables
 dotenv.config();
@@ -37,7 +38,8 @@ app.use("/api/about", aboutRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/education", educationRoutes);
 app.use("/api/skills", skillsRoutes);
-app.use("/api/experience", experirienceRoutes);
+app.use("/api/experience", experienceRoutes);
+app.use("/api/projects", projectRoutes);
 
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {
