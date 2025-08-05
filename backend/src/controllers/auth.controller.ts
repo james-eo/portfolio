@@ -2,9 +2,6 @@ import type { Request, Response, NextFunction } from "express"
 import User from "../models/user.model"
 import ErrorResponse from "../utils/errorResponse"
 import asyncHandler from "../utils/asyncHandler"
-import crypto from "crypto"
-import sendEmail from "../utils/sendEmail"
-import type { UserDocument } from "../types"
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -17,10 +14,10 @@ export const register = asyncHandler(async (req: Request, res: Response, next: N
     name,
     email,
     password,
-    role: role || "user",
+    role,
   })
 
-  sendTokenResponse(user, 201, res)
+  sendTokenResponse(user, 200, res)
 })
 
 // @desc    Login user
@@ -78,124 +75,13 @@ export const getMe = asyncHandler(async (req: Request, res: Response, next: Next
   })
 })
 
-// @desc    Update user details
-// @route   PUT /api/auth/updatedetails
-// @access  Private
-export const updateDetails = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const fieldsToUpdate = {
-    name: req.body.name,
-    email: req.body.email,
-  }
-
-  const user = await User.findByIdAndUpdate(req.user!.id, fieldsToUpdate, {
-    new: true,
-    runValidators: true,
-  })
-
-  res.status(200).json({
-    success: true,
-    data: user,
-  })
-})
-
-// @desc    Update password
-// @route   PUT /api/auth/updatepassword
-// @access  Private
-export const updatePassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await User.findById(req.user!.id).select("+password")
-
-  if (!user) {
-    return next(new ErrorResponse("User not found", 404))
-  }
-
-  // Check current password
-  if (!(await user.matchPassword(req.body.currentPassword))) {
-    return next(new ErrorResponse("Password is incorrect", 401))
-  }
-
-  user.password = req.body.newPassword
-  await user.save()
-
-  sendTokenResponse(user, 200, res)
-})
-
-// @desc    Forgot password
-// @route   POST /api/auth/forgotpassword
-// @access  Public
-export const forgotPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await User.findOne({ email: req.body.email })
-
-  if (!user) {
-    return next(new ErrorResponse("There is no user with that email", 404))
-  }
-
-  // Get reset token
-  const resetToken = crypto.randomBytes(20).toString("hex")
-
-  // Hash token and set to resetPasswordToken field
-  user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex")
-
-  // Set expire
-  user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000)
-
-  await user.save({ validateBeforeSave: false })
-
-  // Create reset url
-  const resetUrl = `${req.protocol}://${req.get("host")}/api/auth/resetpassword/${resetToken}`
-
-  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`
-
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: "Password reset token",
-      message,
-    })
-
-    res.status(200).json({ success: true, data: "Email sent" })
-  } catch (err) {
-    console.log(err)
-    user.resetPasswordToken = undefined
-    user.resetPasswordExpire = undefined
-
-    await user.save({ validateBeforeSave: false })
-
-    return next(new ErrorResponse("Email could not be sent", 500))
-  }
-})
-
-// @desc    Reset password
-// @route   PUT /api/auth/resetpassword/:resettoken
-// @access  Public
-export const resetPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  // Get hashed token
-  const resetPasswordToken = crypto.createHash("sha256").update(req.params.resettoken).digest("hex")
-
-  const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() },
-  })
-
-  if (!user) {
-    return next(new ErrorResponse("Invalid token", 400))
-  }
-
-  // Set new password
-  user.password = req.body.password
-  user.resetPasswordToken = undefined
-  user.resetPasswordExpire = undefined
-  await user.save()
-
-  sendTokenResponse(user, 200, res)
-})
-
-// Helper function to get token from model, create cookie and send response
-const sendTokenResponse = (user: UserDocument, statusCode: number, res: Response) => {
+// Get token from model, create cookie and send response
+const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
   // Create token
   const token = user.getSignedJwtToken()
 
   const options = {
-    expires: new Date(Date.now() + Number.parseInt(process.env.JWT_COOKIE_EXPIRE as string, 10) * 24 * 60 * 60 * 1000),
+    expires: new Date(Date.now() + Number(process.env.JWT_COOKIE_EXPIRE) * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   }
@@ -203,5 +89,6 @@ const sendTokenResponse = (user: UserDocument, statusCode: number, res: Response
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
     token,
+    data: user,
   })
 }
