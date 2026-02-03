@@ -1,0 +1,32 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint": "pnpm -r lint",
+    "type-check": "pnpm -r type-check",
+    "build": "pnpm -r build"
+  },
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx,js,jsx}": [
+      "pnpm --filter frontend lint",
+      "pnpm --filter frontend format"
+    ],
+    "backend/**/*.{ts,js}": [
+      "pnpm --filter backend lint",
+      "pnpm --filter backend format"
+    ]
+  }
+}
