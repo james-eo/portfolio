@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
-import SkillCategory from '../models/skills.model';
-import ErrorResponse from '../utils/errorResponse';
-import asyncHandler from '../utils/asyncHandler';
+import SkillCategory from '@/models/skills.model';
+import ErrorResponse from '@/utils/errorResponse';
+import asyncHandler from '@/utils/asyncHandler';
 
 // @desc    Get all skill categories
 // @route   GET /api/skills
