@@ -1,22 +1,20 @@
-import type { Request, Response, NextFunction } from "express";
-import SkillCategory from "../models/skills.model";
-import ErrorResponse from "../utils/errorResponse";
-import asyncHandler from "../utils/asyncHandler";
+import type { Request, Response, NextFunction } from 'express';
+import SkillCategory from '../models/skills.model';
+import ErrorResponse from '../utils/errorResponse';
+import asyncHandler from '../utils/asyncHandler';
 
 // @desc    Get all skill categories
 // @route   GET /api/skills
 // @access  Public
-export const getSkillCategories = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const skillCategories = await SkillCategory.find().sort({ createdAt: 1 });
+export const getSkillCategories = asyncHandler(async (req: Request, res: Response) => {
+  const skillCategories = await SkillCategory.find().sort({ createdAt: 1 });
 
-    res.status(200).json({
-      success: true,
-      count: skillCategories.length,
-      data: skillCategories,
-    });
-  }
-);
+  res.status(200).json({
+    success: true,
+    count: skillCategories.length,
+    data: skillCategories,
+  });
+});
 
 // @desc    Get single skill category
 // @route   GET /api/skills/:id
@@ -26,12 +24,7 @@ export const getSkillCategory = asyncHandler(
     const skillCategory = await SkillCategory.findById(req.params.id);
 
     if (!skillCategory) {
-      return next(
-        new ErrorResponse(
-          `Skill category not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Skill category not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
@@ -50,22 +43,20 @@ export const createSkillCategory = asyncHandler(
 
     // Validate required fields
     if (!name) {
-      return next(new ErrorResponse("Category name is required", 400));
+      return next(new ErrorResponse('Category name is required', 400));
     }
 
     if (!skills || !Array.isArray(skills) || skills.length === 0) {
-      return next(new ErrorResponse("At least one skill is required", 400));
+      return next(new ErrorResponse('At least one skill is required', 400));
     }
 
     // Check if category already exists
     const existingCategory = await SkillCategory.findOne({
-      name: { $regex: new RegExp(`^${name}$`, "i") },
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
     });
 
     if (existingCategory) {
-      return next(
-        new ErrorResponse("Skill category with this name already exists", 400)
-      );
+      return next(new ErrorResponse('Skill category with this name already exists', 400));
     }
 
     const skillCategory = await SkillCategory.create(req.body);
@@ -73,7 +64,7 @@ export const createSkillCategory = asyncHandler(
     res.status(201).json({
       success: true,
       data: skillCategory,
-      message: "Skill category created successfully",
+      message: 'Skill category created successfully',
     });
   }
 );
@@ -87,35 +78,26 @@ export const updateSkillCategory = asyncHandler(
 
     // Validate required fields
     if (!name) {
-      return next(new ErrorResponse("Category name is required", 400));
+      return next(new ErrorResponse('Category name is required', 400));
     }
 
     if (!skills || !Array.isArray(skills) || skills.length === 0) {
-      return next(new ErrorResponse("At least one skill is required", 400));
+      return next(new ErrorResponse('At least one skill is required', 400));
     }
 
-    const skillCategory = await SkillCategory.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const skillCategory = await SkillCategory.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!skillCategory) {
-      return next(
-        new ErrorResponse(
-          `Skill category not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Skill category not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
       success: true,
       data: skillCategory,
-      message: "Skill category updated successfully",
+      message: 'Skill category updated successfully',
     });
   }
 );
@@ -128,12 +110,7 @@ export const deleteSkillCategory = asyncHandler(
     const skillCategory = await SkillCategory.findById(req.params.id);
 
     if (!skillCategory) {
-      return next(
-        new ErrorResponse(
-          `Skill category not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Skill category not found with id of ${req.params.id}`, 404));
     }
 
     await skillCategory.deleteOne();
@@ -141,7 +118,7 @@ export const deleteSkillCategory = asyncHandler(
     res.status(200).json({
       success: true,
       data: {},
-      message: "Skill category deleted successfully",
+      message: 'Skill category deleted successfully',
     });
   }
 );
