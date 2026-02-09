@@ -6,6 +6,7 @@ const errorHandler = (err: Error, req: Request, res: Response) => {
   error.message = err.message;
 
   // Log to console for dev
+  // Please remove in production
   console.log(err);
 
   // Mongoose bad ObjectId
