@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import ErrorResponse from '../utils/errorResponse';
+import ErrorResponse from '@/utils/errorResponse';
 
 const errorHandler = (err: Error, req: Request, res: Response) => {
   let error: ErrorResponse | Error = { ...err };
