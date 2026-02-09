@@ -1,36 +1,33 @@
-import mongoose, { Schema, type Document } from "mongoose";
-import bcrypt from "bcryptjs";
-import jwt, { type SignOptions } from "jsonwebtoken";
-import type { UserDocument } from "../types";
+import mongoose, { Schema } from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt, { type SignOptions } from 'jsonwebtoken';
+import type { UserDocument } from '../types';
 
 const userSchema: Schema<UserDocument> = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Please add a name"],
+      required: [true, 'Please add a name'],
       trim: true,
-      maxlength: [50, "Name cannot be more than 50 characters"],
+      maxlength: [50, 'Name cannot be more than 50 characters'],
     },
     email: {
       type: String,
-      required: [true, "Please add an email"],
+      required: [true, 'Please add an email'],
       unique: true,
       lowercase: true,
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please add a valid email",
-      ],
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please add a valid email'],
     },
     password: {
       type: String,
-      required: [true, "Please add a password"],
-      minlength: [6, "Password must be at least 6 characters"],
+      required: [true, 'Please add a password'],
+      minlength: [6, 'Password must be at least 6 characters'],
       select: false,
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ['admin'],
+      default: 'admin',
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
@@ -41,9 +38,9 @@ const userSchema: Schema<UserDocument> = new Schema(
 );
 
 // Encrypt password using bcrypt
-userSchema.pre("save", async function (next) {
+userSchema.pre('save', async function (next) {
   const user = this as UserDocument;
-  if (!user.isModified("password")) {
+  if (!user.isModified('password')) {
     return next();
   }
 
@@ -63,10 +60,8 @@ userSchema.methods.getSignedJwtToken = function (): string {
 };
 
 // Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function (
-  enteredPassword: string
-): Promise<boolean> {
+userSchema.methods.matchPassword = async function (enteredPassword: string): Promise<boolean> {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-export default mongoose.model<UserDocument>("User", userSchema);
+export default mongoose.model<UserDocument>('User', userSchema);
