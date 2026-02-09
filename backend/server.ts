@@ -1,22 +1,19 @@
-import express, {
-  type Application,
-  type Request,
-  type Response,
-  type NextFunction,
-} from "express";
+import express, { type Application, type Request, type Response } from 'express';
+import cors from 'cors';
 
-import dotenv from "dotenv";
-import connectDB from "./src/config/db";
+import dotenv from 'dotenv';
+import connectDB from '@/config/db';
 
 // Import routes
-import aboutRoutes from "./src/routes/about.routes";
-import authRoutes from "./src/routes/auth.routes";
-import contactRoutes from "./src/routes/contact.routes";
-import educationRoutes from "./src/routes/education.routes";
-import userRoutes from "./src/routes/user.routes";
-import skillsRoutes from "./src/routes/skills.routes";
-import experienceRoutes from "./src/routes/experience.routes";
-import projectRoutes from "./src/routes/projects.routes";
+import aboutRoutes from '@/routes/about.routes';
+import authRoutes from '@/routes/auth.routes';
+import contactRoutes from '@/routes/contact.routes';
+import educationRoutes from '@/routes/education.routes';
+import userRoutes from '@/routes/user.routes';
+import skillsRoutes from '@/routes/skills.routes';
+import experienceRoutes from '@/routes/experience.routes';
+import projectRoutes from '@/routes/projects.routes';
+import uploadRoutes from '@/routes/upload.routes';
 
 // Load environment variables
 dotenv.config();
@@ -28,22 +25,29 @@ const app: Application = express();
 connectDB();
 
 // Middleware
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/about", aboutRoutes);
-app.use("/api/contact", contactRoutes);
-app.use("/api/education", educationRoutes);
-app.use("/api/skills", skillsRoutes);
-app.use("/api/experience", experienceRoutes);
-app.use("/api/projects", projectRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/about', aboutRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/education', educationRoutes);
+app.use('/api/skills', skillsRoutes);
+app.use('/api/experience', experienceRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check endpoint
-app.get("/health", (req: Request, res: Response) => {
-  res.status(200).json({ status: "ok", message: "Server is running" });
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
 // Error handling middleware
@@ -51,22 +55,15 @@ interface ErrorWithStatusCode extends Error {
   statusCode?: number;
 }
 
-app.use(
-  (
-    err: ErrorWithStatusCode,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    console.error(err.stack);
-    const statusCode = err.statusCode || 500;
-    res.status(statusCode).json({
-      status: "error",
-      message: err.message || "Internal Server Error",
-      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-    });
-  }
-);
+app.use((err: ErrorWithStatusCode, req: Request, res: Response) => {
+  console.error(err.stack);
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({
+    status: 'error',
+    message: err.message || 'Internal Server Error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+  });
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;
