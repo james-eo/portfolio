@@ -1,5 +1,5 @@
-import type { Document } from "mongoose";
-import type mongoose from "mongoose";
+import type { Document } from 'mongoose';
+import type mongoose from 'mongoose';
 
 // Extend Express Request to include user and session
 declare global {
@@ -15,7 +15,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: "admin" | "user";
+  role: 'admin' | 'user';
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   getSignedJwtToken(): string;
@@ -23,12 +23,14 @@ export interface IUser {
 }
 
 export interface UserDocument extends IUser, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
 // About interfaces
 export interface IAbout {
+  name: string;
   summary: string;
   location?: string;
   title?: string;
@@ -45,6 +47,7 @@ export interface IAbout {
 }
 
 export interface AboutDocument extends IAbout, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,6 +63,7 @@ export interface ISkillCategory {
 }
 
 export interface SkillCategoryDocument extends ISkillCategory, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,12 +75,14 @@ export interface IExperience {
   location?: string;
   startDate: string;
   endDate?: string;
+  isCurrent?: boolean;
   description: string[];
   skills?: string[];
   order?: number;
 }
 
 export interface ExperienceDocument extends IExperience, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -96,6 +102,7 @@ export interface IProject {
 }
 
 export interface ProjectDocument extends IProject, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -110,6 +117,7 @@ export interface IEducation {
 }
 
 export interface EducationDocument extends IEducation, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -124,6 +132,7 @@ export interface IContact {
 }
 
 export interface ContactDocument extends IContact, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -133,17 +142,11 @@ export interface IResumeTemplate {
   name: string;
   displayName: string;
   description: string;
-  category:
-    | "modern"
-    | "professional"
-    | "creative"
-    | "minimal"
-    | "technical"
-    | "custom";
+  category: 'modern' | 'professional' | 'creative' | 'minimal' | 'technical' | 'custom';
   isActive: boolean;
   isDefault: boolean;
   templateData: {
-    layout: "single-column" | "two-column" | "three-column";
+    layout: 'single-column' | 'two-column' | 'three-column';
     colorScheme: {
       primary: string;
       secondary: string;
@@ -173,8 +176,8 @@ export interface IResumeTemplate {
       customSections?: Array<{
         id: string;
         title: string;
-        type: "text" | "list" | "grid";
-        content: any;
+        type: 'text' | 'list' | 'grid';
+        content: Record<string, unknown>;
       }>;
     };
   };
@@ -190,6 +193,7 @@ export interface IResumeTemplate {
 }
 
 export interface ResumeTemplateDocument extends IResumeTemplate, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -240,7 +244,7 @@ export interface IResumeGeneration {
     }>;
     customSections?: Array<{
       title: string;
-      content: any;
+      content: Record<string, unknown>;
     }>;
   };
   customizations: {
@@ -268,16 +272,16 @@ export interface IResumeGeneration {
   downloadedAt?: Date;
   fileUrl?: string;
   fileSize?: number;
-  status: "pending" | "generated" | "failed" | "expired";
+  status: 'pending' | 'generated' | 'failed' | 'expired';
   errorMessage?: string;
   expiresAt: Date;
 }
 
 export interface ResumeGenerationDocument extends IResumeGeneration, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
-
 // Resume Rating interfaces
 export interface IResumeRating {
   templateId: mongoose.Types.ObjectId;
@@ -288,8 +292,8 @@ export interface IResumeRating {
   helpful: number;
   reported: boolean;
 }
-
 export interface ResumeRatingDocument extends IResumeRating, Document {
+  _id: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
