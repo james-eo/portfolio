@@ -1,12 +1,15 @@
-import express from "express"
-import { register, login, logout, getMe } from "../controllers/auth.controller"
-import { protect } from "../middleware/auth.middleware"
+import express from 'express';
+import { login, logout, getMe, updatePassword } from '@/controllers/auth.controller';
+import { protect } from '@/middleware/auth.middleware';
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/register", register)
-router.post("/login", login)
-router.get("/logout", logout)
-router.get("/me", protect, getMe)
+// Public
+router.post('/login', login);
 
-export default router
+// Protected (admin only)
+router.get('/logout', protect, logout);
+router.get('/me', protect, getMe);
+router.put('/updatepassword', protect, updatePassword);
+
+export default router;
