@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
-import Contact from '../models/contact.model';
-import ErrorResponse from '../utils/errorResponse';
-import asyncHandler from '../utils/asyncHandler';
-import sendEmail from '../utils/sendEmail';
+import Contact from '@/models/contact.model';
+import ErrorResponse from '@/utils/errorResponse';
+import asyncHandler from '@/utils/asyncHandler';
+import sendEmail from '@/utils/sendEmail';
 
 // @desc    Get all contact messages
 // @route   GET /api/contact
