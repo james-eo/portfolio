@@ -1,8 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
-import ErrorResponse from '../utils/errorResponse';
-import asyncHandler from '../utils/asyncHandler';
-import cloudinary from '../utils/cloudinary';
-import type { Express } from 'express';
+import ErrorResponse from '@/utils/errorResponse';
+import asyncHandler from '@/utils/asyncHandler';
+import cloudinary from '@/utils/cloudinary';
 
 // @desc    Upload image to Cloudinary
 // @route   POST /api/upload
