@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
-import About from '../models/about.model';
-import ErrorResponse from '../utils/errorResponse';
-import asyncHandler from '../utils/asyncHandler';
+import About from '@/models/about.model';
+import ErrorResponse from '@/utils/errorResponse';
+import asyncHandler from '@/utils/asyncHandler';
 
 // @desc    Get about info
 // @route   GET /api/about

@@ -1,7 +1,7 @@
-import type { Request, Response, NextFunction } from "express";
-import Education from "../models/education.model";
-import ErrorResponse from "../utils/errorResponse";
-import asyncHandler from "../utils/asyncHandler";
+import type { Request, Response, NextFunction } from 'express';
+import Education from '@/models/education.model';
+import ErrorResponse from '@/utils/errorResponse';
+import asyncHandler from '@/utils/asyncHandler';
 
 // @desc    Get all education
 // @route   GET /api/education
@@ -12,7 +12,7 @@ export const getEducation = asyncHandler(
 
     // Check if education records exist
     if (!education || education.length === 0) {
-      return next(new ErrorResponse("No education records found", 404));
+      return next(new ErrorResponse('No education records found', 404));
     }
 
     res.status(200).json({
@@ -31,12 +31,7 @@ export const getEducationById = asyncHandler(
     const education = await Education.findById(req.params.id);
 
     if (!education) {
-      return next(
-        new ErrorResponse(
-          `Education not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Education not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
@@ -55,23 +50,21 @@ export const createEducation = asyncHandler(
 
     // Validate required fields
     if (!degree) {
-      return next(new ErrorResponse("Degree is required", 400));
+      return next(new ErrorResponse('Degree is required', 400));
     }
 
     if (!institution) {
-      return next(new ErrorResponse("Institution is required", 400));
+      return next(new ErrorResponse('Institution is required', 400));
     }
 
     if (!year) {
-      return next(new ErrorResponse("Year is required", 400));
+      return next(new ErrorResponse('Year is required', 400));
     }
 
     // Validate year format
     const yearRegex = /^\d{4}$|^\d{4}-\d{4}$/;
     if (!yearRegex.test(year)) {
-      return next(
-        new ErrorResponse("Year must be in YYYY or YYYY-YYYY format", 400)
-      );
+      return next(new ErrorResponse('Year must be in YYYY or YYYY-YYYY format', 400));
     }
 
     const education = await Education.create(req.body);
@@ -79,7 +72,7 @@ export const createEducation = asyncHandler(
     res.status(201).json({
       success: true,
       data: education,
-      message: "Education record created successfully",
+      message: 'Education record created successfully',
     });
   }
 );
@@ -93,39 +86,30 @@ export const updateEducation = asyncHandler(
 
     // Validate required fields
     if (!degree) {
-      return next(new ErrorResponse("Degree is required", 400));
+      return next(new ErrorResponse('Degree is required', 400));
     }
 
     if (!institution) {
-      return next(new ErrorResponse("Institution is required", 400));
+      return next(new ErrorResponse('Institution is required', 400));
     }
 
     if (!year) {
-      return next(new ErrorResponse("Year is required", 400));
+      return next(new ErrorResponse('Year is required', 400));
     }
 
-    const education = await Education.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const education = await Education.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!education) {
-      return next(
-        new ErrorResponse(
-          `Education not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Education not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
       success: true,
       data: education,
-      message: "Education record updated successfully",
+      message: 'Education record updated successfully',
     });
   }
 );
@@ -138,12 +122,7 @@ export const deleteEducation = asyncHandler(
     const education = await Education.findById(req.params.id);
 
     if (!education) {
-      return next(
-        new ErrorResponse(
-          `Education not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Education not found with id of ${req.params.id}`, 404));
     }
 
     await education.deleteOne();
@@ -151,7 +130,7 @@ export const deleteEducation = asyncHandler(
     res.status(200).json({
       success: true,
       data: {},
-      message: "Education record deleted successfully",
+      message: 'Education record deleted successfully',
     });
   }
 );

@@ -1,7 +1,7 @@
-import type { Request, Response, NextFunction } from "express";
-import Experience from "../models/experience.model";
-import ErrorResponse from "../utils/errorResponse";
-import asyncHandler from "../utils/asyncHandler";
+import type { Request, Response, NextFunction } from 'express';
+import Experience from '@/models/experience.model';
+import ErrorResponse from '@/utils/errorResponse';
+import asyncHandler from '@/utils/asyncHandler';
 
 // @desc    Get all experiences
 // @route   GET /api/experience
@@ -14,7 +14,7 @@ export const getExperiences = asyncHandler(
     });
 
     if (!experiences || experiences.length === 0) {
-      return next(new ErrorResponse("No experiences found", 404));
+      return next(new ErrorResponse('No experiences found', 404));
     }
 
     res.status(200).json({
@@ -33,12 +33,7 @@ export const getExperienceById = asyncHandler(
     const experience = await Experience.findById(req.params.id);
 
     if (!experience) {
-      return next(
-        new ErrorResponse(
-          `Experience not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Experience not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
@@ -57,45 +52,29 @@ export const createExperience = asyncHandler(
 
     // Validate required fields
     if (!title) {
-      return next(new ErrorResponse("Job title is required", 400));
+      return next(new ErrorResponse('Job title is required', 400));
     }
 
     if (!company) {
-      return next(new ErrorResponse("Company name is required", 400));
+      return next(new ErrorResponse('Company name is required', 400));
     }
 
     if (!startDate) {
-      return next(new ErrorResponse("Start date is required", 400));
+      return next(new ErrorResponse('Start date is required', 400));
     }
 
-    if (
-      !description ||
-      !Array.isArray(description) ||
-      description.length === 0
-    ) {
-      return next(
-        new ErrorResponse("At least one description point is required", 400)
-      );
+    if (!description || !Array.isArray(description) || description.length === 0) {
+      return next(new ErrorResponse('At least one description point is required', 400));
     }
 
     // Validate date format (basic check)
     const dateRegex = /^\d{4}-\d{2}$|^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(startDate)) {
-      return next(
-        new ErrorResponse(
-          "Start date must be in YYYY-MM or YYYY-MM-DD format",
-          400
-        )
-      );
+      return next(new ErrorResponse('Start date must be in YYYY-MM or YYYY-MM-DD format', 400));
     }
 
     if (req.body.endDate && !dateRegex.test(req.body.endDate)) {
-      return next(
-        new ErrorResponse(
-          "End date must be in YYYY-MM or YYYY-MM-DD format",
-          400
-        )
-      );
+      return next(new ErrorResponse('End date must be in YYYY-MM or YYYY-MM-DD format', 400));
     }
 
     const experience = await Experience.create(req.body);
@@ -116,49 +95,34 @@ export const updateExperience = asyncHandler(
 
     // Validate required fields
     if (!title) {
-      return next(new ErrorResponse("Job title is required", 400));
+      return next(new ErrorResponse('Job title is required', 400));
     }
 
     if (!company) {
-      return next(new ErrorResponse("Company name is required", 400));
+      return next(new ErrorResponse('Company name is required', 400));
     }
 
     if (!startDate) {
-      return next(new ErrorResponse("Start date is required", 400));
+      return next(new ErrorResponse('Start date is required', 400));
     }
 
-    if (
-      !description ||
-      !Array.isArray(description) ||
-      description.length === 0
-    ) {
-      return next(
-        new ErrorResponse("At least one description point is required", 400)
-      );
+    if (!description || !Array.isArray(description) || description.length === 0) {
+      return next(new ErrorResponse('At least one description point is required', 400));
     }
 
-    const experience = await Experience.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const experience = await Experience.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!experience) {
-      return next(
-        new ErrorResponse(
-          `Experience not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Experience not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
       success: true,
       data: experience,
-      message: "Experience updated successfully",
+      message: 'Experience updated successfully',
     });
   }
 );
@@ -171,12 +135,7 @@ export const deleteExperience = asyncHandler(
     const experience = await Experience.findById(req.params.id);
 
     if (!experience) {
-      return next(
-        new ErrorResponse(
-          `Experience not found with id of ${req.params.id}`,
-          404
-        )
-      );
+      return next(new ErrorResponse(`Experience not found with id of ${req.params.id}`, 404));
     }
 
     await experience.deleteOne();
@@ -184,7 +143,7 @@ export const deleteExperience = asyncHandler(
     res.status(200).json({
       success: true,
       data: {},
-      message: "Experience deleted successfully",
+      message: 'Experience deleted successfully',
     });
   }
 );
