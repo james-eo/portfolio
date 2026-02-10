@@ -14,6 +14,9 @@ import skillsRoutes from '@/routes/skills.routes';
 import experienceRoutes from '@/routes/experience.routes';
 import projectRoutes from '@/routes/projects.routes';
 import uploadRoutes from '@/routes/upload.routes';
+import resumeRoutes from '@/routes/resume.routes';
+import resumeTemplateRoutes from '@/routes/resumeTemplate.routes';
+import resumeGenerationRoutes from '@/routes/resumeGeneration.routes';
 
 // Load environment variables
 dotenv.config();
@@ -44,6 +47,9 @@ app.use('/api/skills', skillsRoutes);
 app.use('/api/experience', experienceRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/resume', resumeRoutes);
+app.use('/api/resume/templates', resumeTemplateRoutes);
+app.use('/api/resume', resumeGenerationRoutes);
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {
