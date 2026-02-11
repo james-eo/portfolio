@@ -1,44 +1,29 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { AuthProvider } from "@/components/auth-provider"
-import { Toaster } from "@/components/ui/toaster"
+import type React from 'react';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { AuthProvider } from '@/components/auth-provider';
+import { Toaster } from '@/components/ui/sonner';
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "John Doe - Full Stack Developer",
-  description: "Portfolio website showcasing my projects, skills, and experience as a full stack developer.",
-  keywords: ["portfolio", "full stack developer", "react", "next.js", "node.js"],
-  authors: [{ name: "John Doe" }],
-  creator: "John Doe",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://johndoe.dev",
-    title: "John Doe - Full Stack Developer",
-    description: "Portfolio website showcasing my projects, skills, and experience as a full stack developer.",
-    siteName: "John Doe Portfolio",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "John Doe - Full Stack Developer",
-    description: "Portfolio website showcasing my projects, skills, and experience as a full stack developer.",
-    creator: "@johndoe",
-  },
-}
+  title: 'James Okonkwo - Full Stack Developer',
+  description:
+    'Portfolio website of James Okonkwo, a Full Stack Developer specializing in modern web technologies.',
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <html lang="en" suppressHydrationWarning={true}>
+      <body className={inter.className} suppressHydrationWarning={true}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <AuthProvider>
             {children}
             <Toaster />
@@ -46,5 +31,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
