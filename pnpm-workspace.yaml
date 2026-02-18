@@ -7,5 +7,6 @@ ignoredBuiltDependencies:
   - puppeteer
 
 onlyBuiltDependencies:
+  - core-js
   - sharp
   - unrs-resolver
