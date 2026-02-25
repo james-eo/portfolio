@@ -232,7 +232,7 @@ ResumeGenerationSchema.index({ status: 1 });
 ResumeGenerationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 // Virtual for download URL
-ResumeGenerationSchema.virtual('downloadUrl').get(function () {
+ResumeGenerationSchema.virtual('downloadUrl').get(function (this: ResumeGenerationDocument) {
   return this.fileUrl ? `/api/resume/download/${this._id}` : null;
 });
 

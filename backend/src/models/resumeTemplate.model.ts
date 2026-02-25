@@ -208,7 +208,7 @@ ResumeTemplateSchema.index({ downloadCount: -1 });
 ResumeTemplateSchema.index({ tags: 1 });
 
 // Middleware
-ResumeTemplateSchema.pre('save', function (next) {
+ResumeTemplateSchema.pre('save', function (this: ResumeTemplateDocument, next) {
   this.lastModified = new Date();
   next();
 });
